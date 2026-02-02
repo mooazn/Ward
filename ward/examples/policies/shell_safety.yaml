@@ -1,0 +1,59 @@
+# Shell Safety Policy
+#
+# A basic policy for shell command execution with safety guardrails.
+# Destructive commands require human approval, safe commands are auto-approved.
+
+version: 1
+policy: shell-safety
+
+# Rules are evaluated in order - first match wins
+rules:
+  # Block destructive commands in production entirely
+  - id: deny_prod_destructive
+    when:
+      action: shell_exec
+      env: prod
+      destructive: true
+    then:
+      outcome: deny
+      reason: Destructive commands in production are not allowed
+
+  # Staging destructive commands need human approval
+  - id: staging_destructive_needs_human
+    when:
+      action: shell_exec
+      env: staging
+      destructive: true
+    then:
+      outcome: needs_human
+      reason: Destructive staging commands require approval
+      max_steps: 1
+      max_duration_minutes: 5
+
+  # Dev destructive commands allowed with tight constraints
+  - id: dev_destructive_allowed
+    when:
+      action: shell_exec
+      env: dev
+      destructive: true
+    then:
+      outcome: allow
+      reason: Dev destructive commands permitted
+      max_steps: 3
+      max_duration_minutes: 10
+
+  # Safe commands are auto-approved
+  - id: safe_commands_allowed
+    when:
+      action: shell_exec
+      destructive: false
+    then:
+      outcome: allow
+      reason: Safe command permitted
+      max_steps: 10
+      max_duration_minutes: 30
+
+# If no rule matches, require human approval
+default:
+  outcome: needs_human
+  reason: Unknown action requires review

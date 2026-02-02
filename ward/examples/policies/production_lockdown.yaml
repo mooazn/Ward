@@ -1,0 +1,44 @@
+# Production Lockdown Policy
+#
+# Strict policy for production environments.
+# Everything requires human approval except read-only operations.
+
+version: 1
+policy: production-lockdown
+
+rules:
+  # Database operations always need approval
+  - id: database_needs_human
+    when:
+      action: shell_exec
+      resource: db
+    then:
+      outcome: needs_human
+      reason: Database operations require approval
+      max_steps: 1
+      max_duration_minutes: 5
+
+  # Any destructive action is denied outright
+  - id: deny_all_destructive
+    when:
+      action: shell_exec
+      destructive: true
+    then:
+      outcome: deny
+      reason: Destructive actions not permitted in this policy
+
+  # Read-only commands allowed with monitoring
+  - id: read_only_allowed
+    when:
+      action: shell_exec
+      destructive: false
+    then:
+      outcome: allow
+      reason: Read-only operation permitted
+      max_steps: 5
+      max_duration_minutes: 15
+
+# Deny by default in production
+default:
+  outcome: deny
+  reason: Production policy denies unknown actions

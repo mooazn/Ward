@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+*.egg-info/
+dist/
+build/
+pip-wheel-metadata/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.tox/
+.nox/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+
+# OS
+.DS_Store
+Thumbs.db
+*.bak
+
+# Logs and data
+*.log
+audit_*.json
+revocation_*.json
+*.db
+*.sqlite
+
+# Secrets (belt and suspenders)
+.env
+.env.local
+secrets.json
+config.local.json
+*_secret*
+*_private*
+
+# Local development
+local/
+tmp/
+temp/
+
+# Design documents (internal only)
+docs/design/

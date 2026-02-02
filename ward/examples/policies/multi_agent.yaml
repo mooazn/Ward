@@ -1,0 +1,80 @@
+# Multi-Agent Policy
+#
+# Different rules for different agents.
+# Demonstrates agent-specific permissions.
+
+version: 1
+policy: multi-agent
+
+rules:
+  # Trusted deployment agent can auto-deploy to staging
+  - id: trusted_deployer_staging
+    when:
+      action: shell_exec
+      agent_id: deploy-bot-1
+      env: staging
+    then:
+      outcome: allow
+      reason: Trusted deployer approved for staging
+      max_steps: 20
+      max_duration_minutes: 30
+
+  # Monitoring agent can read anything
+  - id: monitor_read_only
+    when:
+      action: shell_exec
+      agent_id: monitor-agent
+      destructive: false
+    then:
+      outcome: allow
+      reason: Monitoring agent read access
+      max_steps: 100
+      max_duration_minutes: 60
+
+  # Experimental agents must get approval for everything
+  - id: experimental_needs_approval
+    when:
+      action: shell_exec
+      agent_id: experimental-agent
+    then:
+      outcome: needs_human
+      reason: Experimental agent requires supervision
+      max_steps: 1
+      max_duration_minutes: 5
+
+  # Database maintenance agent restricted to DB operations
+  - id: db_agent_allowed
+    when:
+      action: shell_exec
+      agent_id: db-maintenance
+      resource: db
+    then:
+      outcome: allow
+      reason: Database maintenance agent authorized
+      max_steps: 10
+      max_duration_minutes: 20
+
+  # All other destructive actions need approval
+  - id: destructive_needs_human
+    when:
+      action: shell_exec
+      destructive: true
+    then:
+      outcome: needs_human
+      reason: Destructive action requires approval
+
+  # Safe commands allowed by default
+  - id: safe_allowed
+    when:
+      action: shell_exec
+      destructive: false
+    then:
+      outcome: allow
+      reason: Safe command permitted
+      max_steps: 10
+      max_duration_minutes: 15
+
+# Unknown agents need approval
+default:
+  outcome: needs_human
+  reason: Unrecognized agent or action pattern
