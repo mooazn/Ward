@@ -270,7 +270,6 @@ See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## Documentation
 
-- [INTEGRATION_GUIDE.md](INTEGRATION_GUIDE.md) - Integration patterns
 - [CHANGELOG.md](CHANGELOG.md) - Version history
 - [ward/agent/ASYNC_AGENT_GUIDE.md](ward/agent/ASYNC_AGENT_GUIDE.md) - AsyncAgent usage
 

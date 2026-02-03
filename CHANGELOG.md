@@ -45,16 +45,6 @@ Ward v2.5 introduces async agent support, improved CLI usability, and cleaner re
   - `yaml_policy_demo.py`
   - ward wrapper script
 
-### Migration Notes
-**Package import change:**
-```python
-# Old (v2.0)
-from ward.agent import ShellAgent
-
-# New (v2.5)
-from ward.agent import ShellAgent
-```
-
 **AsyncAgent usage:**
 ```python
 from ward.agent import AsyncAgent
